@@ -2,10 +2,6 @@
 
 **Dernière mise à jour : 13 juillet 2026**
 
-> ⚠️ **Avis important** : ce document est un modèle **pré-rempli avec des valeurs à vérifier**. Il doit être **relu et validé par un conseil juridique** avant publication. L'Application est éditée par un **développeur indépendant (personne physique)**, à titre **gratuit et non lucratif** — il ne s'agit pas d'une entreprise commerciale.
->
-> La **Politique de Confidentialité** fait l'objet d'un document distinct (`Politique-de-Confidentialite.md`).
-
 ---
 
 ## Préambule

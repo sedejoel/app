@@ -2,10 +2,6 @@
 
 **Dernière mise à jour : 13 juillet 2026**
 
-> ⚠️ **Avis important** : ce document est un modèle **pré-rempli avec des valeurs à vérifier**. Il doit être **relu et validé par un conseil juridique** avant publication.
->
-> Les **Conditions Générales d'Utilisation** font l'objet d'un document distinct (`CGU.md`).
-
 ---
 
 ## Introduction
