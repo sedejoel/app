@@ -78,4 +78,4 @@ L'Éditeur étant établi au Canada, les présentes CGU sont régies par les **l
 
 ---
 
-*Modèle de départ pour GarageLog. À faire valider juridiquement avant toute publication. Voir aussi la Politique de Confidentialité (`Politique-de-Confidentialite.md`).*
+*GarageLog — Conditions Générales d'Utilisation, en vigueur au 13 juillet 2026. Voir aussi la [Politique de Confidentialité](privacy-gl.md).*

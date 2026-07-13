@@ -90,4 +90,4 @@ Pour toute question relative à vos données : **sede.joel@gmail.com** — **Gen
 
 ---
 
-*Modèle de départ pour GarageLog. À faire valider juridiquement avant toute publication. Voir aussi les Conditions Générales d'Utilisation (`CGU.md`).*
+*GarageLog — Politique de Confidentialité, en vigueur au 13 juillet 2026. Voir aussi les [Conditions Générales d'Utilisation](cgu-gl.md).*
