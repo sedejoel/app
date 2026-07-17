@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Historique du véhicule — GarageLog</title>
+<style>
+  :root { --blue:#1B4DE4; --ink:#101828; --muted:#667085; --bg:#F4F6FB; --card:#fff; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--ink); }
+  .wrap { max-width:640px; margin:0 auto; padding:20px 16px 48px; }
+  header { display:flex; align-items:center; gap:10px; padding:18px 0; }
+  .logo { width:38px; height:38px; border-radius:10px; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:19px; }
+  header b { font-size:19px; } header span { color:var(--muted); font-size:13px; display:block; }
+  .card { background:var(--card); border-radius:16px; padding:18px; margin-bottom:14px; box-shadow:0 1px 3px rgba(16,24,40,.07); }
+  .vehicle h1 { font-size:22px; margin-bottom:2px; }
+  .vehicle .sub { color:var(--muted); font-size:14px; margin-bottom:12px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .kv { background:var(--bg); border-radius:10px; padding:9px 12px; }
+  .kv small { color:var(--muted); display:block; font-size:11px; text-transform:uppercase; letter-spacing:.4px; }
+  .kv b { font-size:14px; word-break:break-all; }
+  .span2 { grid-column:1/-1; }
+  h2 { font-size:16px; margin:20px 0 10px; }
+  .item { border-left:3px solid var(--blue); padding:2px 0 2px 12px; margin-bottom:16px; }
+  .item .date { color:var(--muted); font-size:12px; }
+  .item .title { font-weight:700; font-size:15px; margin:2px 0; }
+  .badge { display:inline-block; background:#EAF0FF; color:var(--blue); font-size:11px; font-weight:600; border-radius:99px; padding:2px 9px; margin:2px 6px 2px 0; }
+  .meta { color:var(--muted); font-size:13px; margin-top:2px; }
+  .comment { font-size:13px; color:var(--ink); background:var(--bg); border-radius:8px; padding:8px 10px; margin-top:6px; }
+  .parts { font-size:13px; color:var(--muted); margin-top:4px; }
+  .empty { text-align:center; color:var(--muted); padding:32px 0; }
+  .spin { width:28px; height:28px; border:3px solid #dbe2f2; border-top-color:var(--blue); border-radius:50%; margin:48px auto; animation:r 0.8s linear infinite; }
+  @keyframes r { to { transform:rotate(360deg); } }
+  footer { text-align:center; color:var(--muted); font-size:12px; margin-top:28px; line-height:1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">G</div>
+    <div><b>GarageLog</b><span>Carnet d'entretien vérifié</span></div>
+  </header>
+  <div id="content"><div class="spin" aria-label="Chargement"></div></div>
+  <footer>Historique généré par GarageLog — le carnet d'entretien numérique.<br>Les interventions sont enregistrées par des garages partenaires.</footer>
+</div>
+<script>
+(async () => {
+  const API = 'https://kjpgevvjyrrikdrwoxoq.supabase.co/functions/v1/vehicle-report';
+  const TYPE_LABELS = {
+    vidange: 'Vidange', freins: 'Freins', moteur: 'Moteur', carrosserie: 'Carrosserie',
+    electricite: 'Électricité', climatisation: 'Climatisation', pneus: 'Pneus',
+    revision: 'Révision', boite_vitesse: 'Boîte de vitesse',
+  };
+  const root = document.getElementById('content');
+
+  // Construction DOM sûre : tout texte passe par textContent (jamais d'innerHTML sur des données).
+  const node = (tag, className, text) => {
+    const n = document.createElement(tag);
+    if (className) n.className = className;
+    if (text != null) n.textContent = text;
+    return n;
+  };
+  const fmtDate = (iso) => new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  const fmtKm = (n) => n == null ? '' : n.toLocaleString('fr-FR') + ' km';
+  const fail = (lines) => {
+    root.replaceChildren();
+    const card = node('div', 'card empty');
+    lines.forEach((l, i) => { if (i > 0) card.appendChild(document.createElement('br')); card.appendChild(document.createTextNode(l)); });
+    root.appendChild(card);
+  };
+
+  const token = (new URLSearchParams(location.search).get('token') || '').trim();
+  if (!/^[a-f0-9]{32,80}$/i.test(token)) return fail(['Ce lien de partage est invalide.']);
+
+  let data;
+  try {
+    const res = await fetch(API + '?token=' + encodeURIComponent(token));
+    if (res.status === 404) return fail(["Ce lien de partage a été révoqué ou n'existe pas.", 'Demandez un nouveau lien au propriétaire du véhicule.']);
+    if (!res.ok) return fail(['Ce lien de partage est invalide.']);
+    data = await res.json();
+  } catch {
+    return fail(["Impossible de charger l'historique.", 'Vérifiez votre connexion puis rechargez la page.']);
+  }
+
+  const v = data.vehicle || {};
+  const interventions = data.interventions || [];
+  document.title = (v.make || '') + ' ' + (v.model || '') + ' — GarageLog';
+
+  const kv = (label, value, span2) => {
+    const box = node('div', 'kv' + (span2 ? ' span2' : ''));
+    box.appendChild(node('small', null, label));
+    box.appendChild(node('b', null, value || '—'));
+    return box;
+  };
+
+  const card = node('div', 'card vehicle');
+  card.appendChild(node('h1', null, (v.make || '') + ' ' + (v.model || '')));
+  card.appendChild(node('div', 'sub', [v.year, v.fuel].filter(Boolean).join(' · ')));
+  const grid = node('div', 'grid');
+  grid.appendChild(kv('Immatriculation', v.plate));
+  grid.appendChild(kv('Kilométrage', fmtKm(v.mileage)));
+  grid.appendChild(kv('Châssis (VIN)', v.vin, true));
+  card.appendChild(grid);
+
+  root.replaceChildren(card, node('h2', null, "Historique d'entretien (" + interventions.length + ')'));
+
+  if (interventions.length === 0) {
+    root.appendChild(node('div', 'card empty', 'Aucune intervention enregistrée pour le moment.'));
+    return;
+  }
+
+  for (const iv of interventions) {
+    const label = TYPE_LABELS[iv.type] || iv.type || '';
+    const title = iv.title || label;
+    const item = node('div', 'item');
+    item.appendChild(node('div', 'date', fmtDate(iv.performed_at) + (iv.mileage ? ' · ' + fmtKm(iv.mileage) : '')));
+    item.appendChild(node('div', 'title', title));
+    if (title !== label) {
+      const badgeRow = node('div');
+      badgeRow.appendChild(node('span', 'badge', label));
+      item.appendChild(badgeRow);
+    }
+    item.appendChild(node('div', 'meta', '🔧 ' + (iv.garage || 'Garage')));
+    const parts = (iv.parts || []).map((p) => p.name + (p.quantity > 1 ? ' ×' + p.quantity : '')).join(', ');
+    if (parts) item.appendChild(node('div', 'parts', 'Pièces : ' + parts));
+    if (iv.comment) item.appendChild(node('div', 'comment', iv.comment));
+    root.appendChild(item);
+  }
+})();
+</script>
+</body>
+</html>
