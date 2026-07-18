@@ -128,6 +128,11 @@
     letter-spacing:.1em; text-transform:uppercase; font-weight:600; padding:.35rem .7rem; border-radius:999px; }
   .aud-card.g .tag{ color:var(--blue); background:color-mix(in srgb,var(--blue) 12%,transparent); }
   .aud-card.o .tag{ color:var(--orange-2); background:color-mix(in srgb,var(--orange) 15%,transparent); }
+  .aud-top{ display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+  .aud-photo{ width:88px; height:88px; border-radius:50%; object-fit:cover; object-position:center top;
+    flex:none; border:3px solid var(--surface); box-shadow:0 8px 20px -10px rgba(20,40,90,.45); }
+  .aud-card.g .aud-photo{ background:color-mix(in srgb,var(--blue) 14%,var(--surface)); }
+  .aud-card.o .aud-photo{ background:color-mix(in srgb,var(--orange) 16%,var(--surface)); }
   .aud-card h3{ font-size:1.25rem; font-weight:780; margin:1rem 0 .5rem; }
   .aud-card ul{ margin:.6rem 0 0; padding:0; list-style:none; }
   .aud-card li{ position:relative; padding-left:1.5rem; margin:.5rem 0; color:var(--muted); }
@@ -255,7 +260,10 @@
   </div>
   <div class="aud">
     <div class="aud-card g">
-      <span class="tag">Garagiste</span>
+      <div class="aud-top">
+        <span class="tag">Garagiste</span>
+        <img class="aud-photo" src="garagiste.png" alt="Un garagiste en tenue de travail" loading="lazy">
+      </div>
       <h3>Enregistrez, facturez le temps, fidélisez</h3>
       <ul>
         <li>Scannez le VIN et créez une intervention en quelques secondes</li>
@@ -265,7 +273,10 @@
       </ul>
     </div>
     <div class="aud-card o">
-      <span class="tag">Propriétaire</span>
+      <div class="aud-top">
+        <span class="tag">Propriétaire</span>
+        <img class="aud-photo" src="proprietaire.png" alt="Un propriétaire consultant l'application" loading="lazy">
+      </div>
       <h3>Gardez l'historique complet de votre véhicule</h3>
       <ul>
         <li>Tout l'entretien réuni, même en changeant de garage</li>
